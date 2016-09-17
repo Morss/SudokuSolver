@@ -23,7 +23,7 @@ public class Solver {
 		sudoku.print();
 	}
 
-	public boolean solverLoop() {
+	private boolean solverLoop() {
 		boolean solvedSomething = false;
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
@@ -40,7 +40,10 @@ public class Solver {
 		}
 		return solvedSomething;
 	}
-
+	
+	/**
+	 * Eliminate all the numbers that are not possible b/c they are already in the row, col or quad.
+	 */
 	private Set<Integer> eliminateByRowColQuad(int row, int col) {
 		Set<Integer> options = allOptionsAvailable();
 		// Row
@@ -59,7 +62,7 @@ public class Solver {
 		return options;
 	}
 
-	public Iterator<Integer> quadrantIterator(int row, int col) {
+	private Iterator<Integer> quadrantIterator(int row, int col) {
 		final int quadrantRow = (row / 3) * 3;
 		final int quadrantCol = (col / 3) * 3;
 
@@ -88,7 +91,7 @@ public class Solver {
 		};
 	}
 
-	public Set<Integer> allOptionsAvailable() {
+	private Set<Integer> allOptionsAvailable() {
 		return new HashSet<Integer>(NUMBERS);
 	}
 }
