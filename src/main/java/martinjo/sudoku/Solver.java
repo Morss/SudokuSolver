@@ -25,23 +25,23 @@ public class Solver {
 
 	public boolean solverLoop() {
 		boolean solvedSomething = false;
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				if (sudoku.getValueAt(i, j) != 0) {
+		for (int row = 0; row < 9; row++) {
+			for (int col = 0; col < 9; col++) {
+				if (sudoku.getValueAt(row, col) != 0) {
 					continue;
 				}
-				Set<Integer> remainingOptions = remainingOptions(i, j);
+				Set<Integer> remainingOptions = eliminateByRowColQuad(row, col);
 				if (remainingOptions.size() == 1) {
-					System.out.println("solved value at: " + i + "," + j + ", added: " + remainingOptions.stream().findFirst().orElse(null));
+					System.out.println("solved value at: " + row + "," + col + ", added: " + remainingOptions.stream().findFirst().orElse(null));
 					solvedSomething = true;
-					sudoku.setValueAt(i, j, remainingOptions.stream().findFirst().orElse(null));
+					sudoku.setValueAt(row, col, remainingOptions.stream().findFirst().orElse(null));
 				}
 			}
 		}
 		return solvedSomething;
 	}
 
-	private Set<Integer> remainingOptions(int row, int col) {
+	private Set<Integer> eliminateByRowColQuad(int row, int col) {
 		Set<Integer> options = allOptionsAvailable();
 		// Row
 		for (int i = 0; i < 9; i++) {
@@ -54,12 +54,12 @@ public class Solver {
 		}
 
 		// Box
-		boxIterator(row, col).forEachRemaining(options::remove);
+		quadrantIterator(row, col).forEachRemaining(options::remove);
 
 		return options;
 	}
 
-	public Iterator<Integer> boxIterator(int row, int col) {
+	public Iterator<Integer> quadrantIterator(int row, int col) {
 		final int quadrantRow = (row / 3) * 3;
 		final int quadrantCol = (col / 3) * 3;
 
