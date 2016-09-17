@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class Solver {
+public final class Solver {
 
 	private final static List<Integer> NUMBERS = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 	private Sudoku sudoku;
@@ -20,6 +20,7 @@ public class Solver {
 		while (solverLoop()) {
 			System.out.println("Iteration: " + count++);
 		}
+		System.out.println();
 		sudoku.print();
 	}
 
@@ -32,7 +33,7 @@ public class Solver {
 				}
 				Set<Integer> remainingOptions = eliminateByRowColQuad(row, col);
 				if (remainingOptions.size() == 1) {
-					System.out.println("solved value at: " + row + "," + col + ", added: " + remainingOptions.stream().findFirst().orElse(null));
+//					System.out.println("solved value at: " + row + "," + col + ", added: " + remainingOptions.stream().findFirst().orElse(null));
 					solvedSomething = true;
 					sudoku.setValueAt(row, col, remainingOptions.stream().findFirst().orElse(null));
 				}
@@ -45,7 +46,7 @@ public class Solver {
 	 * Eliminate all the numbers that are not possible b/c they are already in the row, col or quad.
 	 */
 	private Set<Integer> eliminateByRowColQuad(int row, int col) {
-		Set<Integer> options = allOptionsAvailable();
+		Set<Integer> options = allNumbersAvailable();
 		// Row
 		for (int i = 0; i < 9; i++) {
 			options.remove(sudoku.getValueAt(row, i));
@@ -91,7 +92,7 @@ public class Solver {
 		};
 	}
 
-	private Set<Integer> allOptionsAvailable() {
+	private Set<Integer> allNumbersAvailable() {
 		return new HashSet<Integer>(NUMBERS);
 	}
 }
