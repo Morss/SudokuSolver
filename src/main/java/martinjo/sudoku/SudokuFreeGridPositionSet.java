@@ -89,6 +89,34 @@ public final class SudokuFreeGridPositionSet {
 		return positions;
 	}
 
+	public Set<SudokuGridPosition> getAloneInQuadPositions() {
+		Set<SudokuGridPosition> freePosInQuad = new HashSet<>();
+		for (int quadRow = 0; quadRow < 3; quadRow++) {
+			for (int quadCol = 0; quadCol < 3; quadCol++) {
+				freePosInQuad.addAll(freePositionsInQuad(quadRow, quadCol));
+			}
+		}	
+		return freePosInQuad;
+	}
+	
+	private Set<SudokuGridPosition> freePositionsInQuad(int quadRow, int quadCol) {
+		Set<SudokuGridPosition> freePosInQuad = new HashSet<>();
+		int offSetRow = quadRow * 3;
+		int offsetCol = quadCol * 3;
+		
+		for (int row = offSetRow; row < 3 + offSetRow; row++) {
+			for (int col = offsetCol; col < 3 + offsetCol; col++) {
+				if (containsFreePosition(row, col)) {
+					freePosInQuad.add(new SudokuGridPosition(row, col));
+				}
+			}
+		}
+		if (freePosInQuad.size() == 1) {
+			return freePosInQuad;
+		}
+		return new HashSet<>();
+	}
+
 	public void print() {
 		for (int row = 0; row < 9; row++) {
 			if (row != 0 && row % 3 == 0) {

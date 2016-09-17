@@ -16,11 +16,8 @@ public final class Solver {
 	}
 
 	public void solve() {
-		int count = 0;
 		while (solverLoop()) {
-			System.out.println("Iteration: " + count++);
 		}
-		System.out.println();
 		sudoku.print();
 	}
 
@@ -33,12 +30,26 @@ public final class Solver {
 				}
 				Set<Integer> remainingOptions = eliminateByRowColQuad(row, col);
 				if (remainingOptions.size() == 1) {
-//					System.out.println("solved value at: " + row + "," + col + ", added: " + remainingOptions.stream().findFirst().orElse(null));
 					solvedSomething = true;
 					sudoku.setValueAt(row, col, remainingOptions.stream().findFirst().orElse(null));
 				}
 			}
 		}
+
+		for (int num : NUMBERS) {
+			SudokuFreeGridPositionSet posset = SudokuFreeGridPositionSet.fromAvailablePositions(sudoku);
+			for (int row = 0; row < 9; row++) {
+				for (int col = 0; col < 9; col++) {
+					if (sudoku.getValueAt(row, col) == num) {
+						posset.removeFreeRowPositions(row);
+						posset.removeFreeColumPositions(col);
+						posset.removeFreeQuadPositions(row, col);
+					}
+				}
+			}
+			posset.getAloneInQuadPositions().forEach(p -> sudoku.setValueAt(p.getRow(), p.getCol(), num));
+		}
+
 		return solvedSomething;
 	}
 	
