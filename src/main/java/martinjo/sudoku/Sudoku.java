@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Sudoku {
+public final class Sudoku {
 	private ArrayList<List<Integer>> array;
 
 	public Sudoku(ArrayList<List<Integer>> array) {
@@ -32,11 +32,11 @@ public class Sudoku {
 	public void print() {
 		for (int row = 0; row < 9; row++) {
 			if (row != 0 && row % 3 == 0) {
-				System.out.println("------+-------+------");
+				System.out.println("------+------+-----");
 			}
 			for	(int col = 0; col < 9; col++) {
 				if (col != 0 && col % 3 == 0) {
-					System.out.print("| ");
+					System.out.print("|");
 				}
 				String entry = (getValueAt(row, col) == 0) ? " " : Integer.toString(getValueAt(row, col));
 				System.out.print(entry + " ");
