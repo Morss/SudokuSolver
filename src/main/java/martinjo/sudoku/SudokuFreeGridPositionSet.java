@@ -4,27 +4,27 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public final class SudokuGridPositionSet {
+public final class SudokuFreeGridPositionSet {
 
 	private final Set<SudokuGridPosition> positions;
 
-	private SudokuGridPositionSet(Set<SudokuGridPosition> positions) {
+	private SudokuFreeGridPositionSet(Set<SudokuGridPosition> positions) {
 		this.positions = positions;
 	}
 
-	public static SudokuGridPositionSet fromAvailablePositions(Sudoku sudoku) {
+	public static SudokuFreeGridPositionSet fromAvailablePositions(Sudoku sudoku) {
 		Set<SudokuGridPosition> positions = new HashSet<>();
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
-				if (sudoku.getValueAt(row, col) != 0) {
+				if (sudoku.getValueAt(row, col) == 0) {
 					positions.add(new SudokuGridPosition(row, col));
 				}
 			}
 		}
-		return new SudokuGridPositionSet(positions);
+		return new SudokuFreeGridPositionSet(positions);
 	}
 
-	public boolean containsPosition(int row, int col) {
+	public boolean containsFreePosition(int row, int col) {
 		SudokuBounds.checkSudokuBounds(row, col);
 		Iterator<SudokuGridPosition> it = positions.iterator();
 		SudokuGridPosition currentPos;
@@ -38,12 +38,12 @@ public final class SudokuGridPositionSet {
 		return false;
 	}
 
-	public void addPosition(int row, int col) {
+	public void addFreePosition(int row, int col) {
 		SudokuBounds.checkSudokuBounds(row, col);
 		positions.add(new SudokuGridPosition(row, col));
 	}
 
-	public void removePosition(int row, int col) {
+	public void removeFreePosition(int row, int col) {
 		SudokuBounds.checkSudokuBounds(row, col);
 		Iterator<SudokuGridPosition> it = positions.iterator();
 		SudokuGridPosition currentPos;
@@ -57,30 +57,30 @@ public final class SudokuGridPositionSet {
 		}
 	}
 
-	public void removeRowPositions(int row) {
+	public void removeFreeRowPositions(int row) {
 		SudokuBounds.checkSudokuColBounds(row);
 
 		for (int col = 0; col < 9; col++) {
-			removePosition(row, col);
+			removeFreePosition(row, col);
 		}
 	}
 	
-	public void removeColumPositions(int col) {
+	public void removeFreeColumPositions(int col) {
 		SudokuBounds.checkSudokuColBounds(col);
 
 		for (int row = 0; row < 9; row++) {
-			removePosition(row, col);
+			removeFreePosition(row, col);
 		}
 	}
 	
-	public void removeQuadPositions(int row, int col) {
+	public void removeFreeQuadPositions(int row, int col) {
 		SudokuBounds.checkSudokuBounds(row, col);
 		final int quadrantRow = (row / 3) * 3;
 		final int quadrantCol = (col / 3) * 3;
 		
 		for (int offSetRow = 0; offSetRow < 3; offSetRow++) {
 			for (int offSetCol = 0; offSetCol < 3; offSetCol++) {
-				removePosition(quadrantRow + offSetRow, quadrantCol + offSetCol);
+				removeFreePosition(quadrantRow + offSetRow, quadrantCol + offSetCol);
 			}
 		}
 	}
@@ -98,8 +98,8 @@ public final class SudokuGridPositionSet {
 				if (col != 0 && col % 3 == 0) {
 					System.out.print("|");
 				}
-				if (containsPosition(row, col)) {
-					System.out.print("x ");
+				if (containsFreePosition(row, col)) {
+					System.out.print("0 ");
 				}
 				else {
 					System.out.print("  ");

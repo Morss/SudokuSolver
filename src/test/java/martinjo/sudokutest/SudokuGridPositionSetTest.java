@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import martinjo.sudoku.Sudoku;
-import martinjo.sudoku.SudokuGridPositionSet;
+import martinjo.sudoku.SudokuFreeGridPositionSet;
 
 public class SudokuGridPositionSetTest {
 
@@ -33,14 +33,14 @@ public class SudokuGridPositionSetTest {
 
 	@Test
 	public void testContainsPosition() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
 
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (col == 4 || row == 4) {
-					assertTrue(testSet.containsPosition(row, col));
+					assertFalse(testSet.containsFreePosition(row, col));
 				} else {
-					assertFalse(testSet.containsPosition(row, col));
+					assertTrue(testSet.containsFreePosition(row, col));
 				}
 			}
 		}
@@ -48,57 +48,68 @@ public class SudokuGridPositionSetTest {
 	
 	@Test
 	public void testAddPosition() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
-		assertFalse(testSet.containsPosition(0, 0));
-		testSet.addPosition(0, 0);
-		assertTrue(testSet.containsPosition(0, 0));
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
+		assertFalse(testSet.containsFreePosition(4, 4));
+		testSet.addFreePosition(4, 4);
+		assertTrue(testSet.containsFreePosition(4, 4));
 	}
 
 	@Test
 	public void testRemovePosition() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
-		assertTrue(testSet.containsPosition(4, 4));
-		testSet.removePosition(4, 4);
-		assertFalse(testSet.containsPosition(4, 4));
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
+		assertTrue(testSet.containsFreePosition(0, 0));
+		testSet.removeFreePosition(0, 0);
+		assertFalse(testSet.containsFreePosition(4, 4));
 	}
 	
 	@Test
 	public void testRemoveColPositions() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
 		for (int row = 0; row < 8; row++) {
-			assertTrue(testSet.containsPosition(row, 4));
+			if (row == 4) {
+				assertFalse(testSet.containsFreePosition(row, 0));
+			}
+			else {
+				assertTrue(testSet.containsFreePosition(row, 0));
+			}
 		}
-		testSet.removeColumPositions(4);
+		testSet.removeFreeColumPositions(0);
 		for (int row = 0; row < 8; row++) {
-			assertFalse(testSet.containsPosition(row, 4));
+			assertFalse(testSet.containsFreePosition(row, 0));
 		}
 	}
 
 	@Test
 	public void testRemoveRowPositions() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
 		for (int col = 0; col < 8; col++) {
-			assertTrue(testSet.containsPosition(4, col));
+			if (col == 4) {
+				assertFalse(testSet.containsFreePosition(0, col));
+			}
+			else {
+				assertTrue(testSet.containsFreePosition(0, col));
+			}
 		}
-		testSet.removeRowPositions(4);
+		testSet.removeFreeRowPositions(0);
 		for (int col = 0; col < 8; col++) {
-			assertFalse(testSet.containsPosition(4, col));
+			assertFalse(testSet.containsFreePosition(0, col));
 		}
 	}
 
 	@Test
 	public void testRemoveQuadPositions() {
-		SudokuGridPositionSet testSet = SudokuGridPositionSet.fromAvailablePositions(testSudoku());
-		testSet.removeQuadPositions(3, 3);
-		
+		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
+		testSet.removeFreeQuadPositions(3, 3);
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
-				if (row > 2 && row < 6 && col > 2 && col < 6)
-					assertFalse(testSet.containsPosition(row, col));
+				if (row > 2 && row < 6 && col > 2 && col < 6) {
+					assertFalse(testSet.containsFreePosition(row, col));
+				}
 				else if (row == 4 || col == 4) {
-					assertTrue(testSet.containsPosition(row, col));
-				} else {
-					assertFalse(testSet.containsPosition(row, col));
+					assertFalse(testSet.containsFreePosition(row, col));
+				}
+				else {
+					assertTrue(testSet.containsFreePosition(row, col));
 				}
 			}
 		}
