@@ -62,6 +62,8 @@ public class Sudoku {
 	}
 
 	private class OutOfSudokuBoundsException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
 		public OutOfSudokuBoundsException() {
 			super();
 		}
