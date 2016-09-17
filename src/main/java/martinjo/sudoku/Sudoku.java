@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Sudoku {
-	private ArrayList<List<Integer>> array;
+
+	private final ArrayList<List<Integer>> array;
 
 	public Sudoku(ArrayList<List<Integer>> array) {
 		this.array = array;
@@ -46,26 +47,14 @@ public final class Sudoku {
 	}
 
 	public int getValueAt(int row, int col) {
-		checkSudokuBounds(row, col);
+		SudokuBounds.checkSudokuBounds(row, col);
 		return array.get(row).get(col);
 	}
 
 	public void setValueAt(int row, int col, int value) {
-		checkSudokuBounds(row, col);
+		SudokuBounds.checkSudokuBounds(row, col);
 		array.get(row).set(col, value);
 	}
 
-	private void checkSudokuBounds(int row, int col) {
-		if (row > 9 || col > 9) {
-			throw new OutOfSudokuBoundsException();
-		}
-	}
 
-	private class OutOfSudokuBoundsException extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-
-		public OutOfSudokuBoundsException() {
-			super();
-		}
-	}
 }
