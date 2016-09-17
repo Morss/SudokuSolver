@@ -16,8 +16,12 @@ public final class Solver {
 	}
 
 	public void solve() {
+		int count = 1;
 		while (solverLoop()) {
+			System.out.println("Iterations: " + count);
+			count++;
 		}
+		System.out.println();
 		sudoku.print();
 	}
 
@@ -47,7 +51,11 @@ public final class Solver {
 					}
 				}
 			}
-			posset.getAloneInQuadPositions().forEach(p -> sudoku.setValueAt(p.getRow(), p.getCol(), num));
+			Set<SudokuGridPosition> aloneInQuad = posset.getAloneInQuadPositions();
+			if (aloneInQuad.size() > 0) {
+				solvedSomething = true;
+				aloneInQuad.forEach(p -> sudoku.setValueAt(p.getRow(), p.getCol(), num));
+			}
 		}
 
 		return solvedSomething;
