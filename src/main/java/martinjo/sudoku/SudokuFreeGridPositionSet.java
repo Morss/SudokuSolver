@@ -14,7 +14,7 @@ public final class SudokuFreeGridPositionSet {
         this.bounds = bounds;
     }
 
-    public static SudokuFreeGridPositionSet fromAvailablePositions(Sudoku9x9 sudoku) {
+    public static SudokuFreeGridPositionSet fromAvailablePositions(Sudoku sudoku) {
         SudokuBounds bounds = sudoku.getBounds();
 
         Set<SudokuGridPosition> positions = new HashSet<>();

@@ -1,18 +1,15 @@
 package martinjo.sudoku;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public final class Solver {
 
-	private final static List<Integer> NUMBERS = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-    private final Sudoku9x9 sudoku;
+    private final Sudoku sudoku;
     private final SudokuBounds bounds;
 
-    public Solver(Sudoku9x9 sudoku) {
+    public Solver(Sudoku sudoku) {
 		this.sudoku = sudoku;
         bounds = sudoku.getBounds();
     }
@@ -29,6 +26,7 @@ public final class Solver {
 
 	private boolean solverLoop() {
 		boolean solvedSomething = false;
+
 		for (int row : bounds.getIndexes()) {
 			for (int col : bounds.getIndexes()) {
 				if (sudoku.getValueAt(row, col) != 0) {
@@ -43,7 +41,7 @@ public final class Solver {
 			}
 		}
 
-		for (int num : NUMBERS) {
+		for (int num : bounds.getPossibleNumbers()) {
 			SudokuFreeGridPositionSet posset = SudokuFreeGridPositionSet.fromAvailablePositions(sudoku);
             for (int row : bounds.getIndexes()) {
                 for (int col : bounds.getIndexes()) {
@@ -86,16 +84,19 @@ public final class Solver {
 	}
 
 	private Iterator<Integer> regionIterator(int row, int col) {
-		final int regionRow = (row / 3) * 3;
-		final int regionCol = (col / 3) * 3;
+	    // Region origin is the upper left
+        final int regionSize = bounds.getRegionSize();
+
+        final int regionOriginRow = (row / regionSize) * regionSize;
+		final int regionOriginCol = (col / regionSize) * regionSize;
 
 		return new Iterator<Integer>() {
-			int offSetRow = 0;
-			int offSetCol = 0;
+			int regionRowIndex = 0;
+			int regionColIndex = 0;
 
 			@Override
 			public boolean hasNext() {
-				return (offSetCol < 3 && offSetRow < 3);
+				return (regionColIndex < regionSize && regionRowIndex < regionSize);
 			}
 
 			@Override
@@ -103,11 +104,11 @@ public final class Solver {
 				if (!hasNext()) {
 					throw new RuntimeException();
 				}
-				int next = sudoku.getValueAt(regionRow + offSetRow, regionCol + offSetCol);
-				offSetRow ++;
-				if (offSetRow >= 3) {
-					offSetRow = 0;
-					offSetCol++;
+				int next = sudoku.getValueAt(regionOriginRow + regionRowIndex, regionOriginCol + regionColIndex);
+				regionRowIndex++;
+				if (regionRowIndex == regionSize) {
+					regionRowIndex = 0;
+					regionColIndex++;
 				}
 				return next;
 			}
@@ -115,6 +116,6 @@ public final class Solver {
 	}
 
 	private Set<Integer> allNumbersAvailable() {
-		return new HashSet<Integer>(NUMBERS);
+		return new HashSet<Integer>(bounds.getPossibleNumbers());
 	}
 }

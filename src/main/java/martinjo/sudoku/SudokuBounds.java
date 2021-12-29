@@ -23,6 +23,8 @@ public class SudokuBounds {
     private final int regionMaxIndex;
     @Getter
     private final List<Integer> regionIndexes;
+    @Getter
+    private final List<Integer> possibleNumbers;
 
     public static SudokuBounds forSize(int size) {
         int minIndex = 0;
@@ -34,6 +36,7 @@ public class SudokuBounds {
 
         List<Integer> indexesMutable = new ArrayList<>();
         List<Integer> regionIndexesMutable = new ArrayList<>();
+        List<Integer> possibleNumbers = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
             indexesMutable.add(i);
@@ -41,6 +44,10 @@ public class SudokuBounds {
 
         for (int i = 0; i < regionSize; i++) {
             regionIndexesMutable.add(i);
+        }
+
+        for (int i = 0; i <= size; i++) {
+            possibleNumbers.add(i);
         }
 
         return new SudokuBounds(
@@ -51,8 +58,8 @@ public class SudokuBounds {
                 regionSize,
                 regionMinIndex,
                 regionMaxIndex,
-                Collections.unmodifiableList(regionIndexesMutable));
-
+                Collections.unmodifiableList(regionIndexesMutable),
+                Collections.unmodifiableList(possibleNumbers));
     }
 
     public void checkSudokuBounds(int row, int col) {

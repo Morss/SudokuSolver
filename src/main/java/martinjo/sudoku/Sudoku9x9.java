@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class Sudoku9x9 {
+public final class Sudoku9x9 extends Sudoku {
 
     public static Sudoku9x9 threeStarSudoku() {
         ArrayList<List<Integer>> array = new ArrayList<List<Integer>>();
@@ -98,42 +98,27 @@ public final class Sudoku9x9 {
         return new Sudoku9x9(array);
     }
 
-    private final ArrayList<List<Integer>> array;
-    private final SudokuBounds bounds = SudokuBounds.forSize(9);
+    public static Sudoku9x9 testSudokuInvalidForSolving() {
+        ArrayList<List<Integer>> array = new ArrayList<List<Integer>>();
 
-    public Sudoku9x9(ArrayList<List<Integer>> array) {
-		this.array = array;
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+        array.add(Arrays.asList(	1, 1, 1,	1, 1, 1,	 1, 1, 1	));
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+        array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
+
+        return new Sudoku9x9(array);
     }
 
-    public SudokuBounds getBounds() {
-        return bounds;
+    private Sudoku9x9(ArrayList<List<Integer>> array) {
+        super(array, 9);
     }
-
-	public void print() {
-		for (int row : bounds.getIndexes()) {
-			if (row != 0 && row % bounds.getRegionSize() == 0) {
-				System.out.println("------+------+-----");
-			}
-			for	(int col : bounds.getIndexes()) {
-				if (col != 0 && col % bounds.getRegionSize() == 0) {
-					System.out.print("|");
-				}
-				String entry = (getValueAt(row, col) == 0) ? " " : Integer.toString(getValueAt(row, col));
-				System.out.print(entry + " ");
-			}
-			System.out.println();
-		}
-	}
-
-	public int getValueAt(int row, int col) {
-		bounds.checkSudokuBounds(row, col);
-		return array.get(row).get(col);
-	}
-
-	public void setValueAt(int row, int col, int value) {
-        bounds.checkSudokuBounds(row, col);
-		array.get(row).set(col, value);
-	}
 
 
 }

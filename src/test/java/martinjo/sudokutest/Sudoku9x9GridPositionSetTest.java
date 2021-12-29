@@ -1,35 +1,17 @@
 package martinjo.sudokutest;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Test;
-
 import martinjo.sudoku.Sudoku9x9;
 import martinjo.sudoku.SudokuFreeGridPositionSet;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class Sudoku9x9GridPositionSetTest {
 
-	public Sudoku9x9 testSudoku() {
-		ArrayList<List<Integer>> array = new ArrayList<List<Integer>>();
-
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-		array.add(Arrays.asList(	1, 1, 1,	1, 1, 1,	 1, 1, 1	));
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
-
-		return new Sudoku9x9(array);
-	}
+    private static Sudoku9x9 testSudoku() {
+        return Sudoku9x9.testSudokuInvalidForSolving();
+    }
 
 	@Test
 	public void testContainsPosition() {
