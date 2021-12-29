@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import martinjo.sudoku.Sudoku;
+import martinjo.sudoku.Sudoku9x9;
 import martinjo.sudoku.SudokuFreeGridPositionSet;
 
-public class SudokuGridPositionSetTest {
+public class Sudoku9x9GridPositionSetTest {
 
-	public Sudoku testSudoku() {
+	public Sudoku9x9 testSudoku() {
 		ArrayList<List<Integer>> array = new ArrayList<List<Integer>>();
 
 		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
@@ -28,7 +28,7 @@ public class SudokuGridPositionSetTest {
 		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
 		array.add(Arrays.asList(	0, 0, 0,	0, 1, 0,	 0, 0, 0	));
 
-		return new Sudoku(array);
+		return new Sudoku9x9(array);
 	}
 
 	@Test
@@ -97,9 +97,9 @@ public class SudokuGridPositionSetTest {
 	}
 
 	@Test
-	public void testRemoveQuadPositions() {
+	public void testRemoveRegionPositions() {
 		SudokuFreeGridPositionSet testSet = SudokuFreeGridPositionSet.fromAvailablePositions(testSudoku());
-		testSet.removeFreeQuadPositions(3, 3);
+		testSet.removeFreeRegionPositions(3, 3);
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (row > 2 && row < 6 && col > 2 && col < 6) {

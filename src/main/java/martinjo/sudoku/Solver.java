@@ -9,11 +9,13 @@ import java.util.Set;
 public final class Solver {
 
 	private final static List<Integer> NUMBERS = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-	private Sudoku sudoku;
+    private final Sudoku9x9 sudoku;
+    private final SudokuBounds bounds;
 
-	public Solver(Sudoku sudoku) {
+    public Solver(Sudoku9x9 sudoku) {
 		this.sudoku = sudoku;
-	}
+        bounds = sudoku.getBounds();
+    }
 
 	public void solve() {
 		int count = 1;
@@ -27,34 +29,35 @@ public final class Solver {
 
 	private boolean solverLoop() {
 		boolean solvedSomething = false;
-		for (int row = 0; row < 9; row++) {
-			for (int col = 0; col < 9; col++) {
+		for (int row : bounds.getIndexes()) {
+			for (int col : bounds.getIndexes()) {
 				if (sudoku.getValueAt(row, col) != 0) {
 					continue;
 				}
-				Set<Integer> remainingOptions = eliminateByRowColQuad(row, col);
+				Set<Integer> remainingOptions = eliminateByRowColReg(row, col);
 				if (remainingOptions.size() == 1) {
 					solvedSomething = true;
-					sudoku.setValueAt(row, col, remainingOptions.stream().findFirst().orElse(null));
+					sudoku.setValueAt(row, col, remainingOptions.stream().findFirst()
+                            .orElseThrow(() -> new IllegalStateException("Not solved!")));
 				}
 			}
 		}
 
 		for (int num : NUMBERS) {
 			SudokuFreeGridPositionSet posset = SudokuFreeGridPositionSet.fromAvailablePositions(sudoku);
-			for (int row = 0; row < 9; row++) {
-				for (int col = 0; col < 9; col++) {
+            for (int row : bounds.getIndexes()) {
+                for (int col : bounds.getIndexes()) {
 					if (sudoku.getValueAt(row, col) == num) {
 						posset.removeFreeRowPositions(row);
 						posset.removeFreeColumPositions(col);
-						posset.removeFreeQuadPositions(row, col);
+						posset.removeFreeRegionPositions(row, col);
 					}
 				}
 			}
-			Set<SudokuGridPosition> aloneInQuad = posset.getAloneInQuadPositions();
-			if (aloneInQuad.size() > 0) {
+			Set<SudokuGridPosition> aloneInRegion = posset.getAloneInRegionPositions();
+			if (aloneInRegion.size() > 0) {
 				solvedSomething = true;
-				aloneInQuad.forEach(p -> sudoku.setValueAt(p.getRow(), p.getCol(), num));
+				aloneInRegion.forEach(p -> sudoku.setValueAt(p.getRow(), p.getCol(), num));
 			}
 		}
 
@@ -62,29 +65,29 @@ public final class Solver {
 	}
 	
 	/**
-	 * Eliminate all the numbers that are not possible b/c they are already in the row, col or quad.
+	 * Eliminate all the numbers that are not possible b/c they are already in the row, col or region.
 	 */
-	private Set<Integer> eliminateByRowColQuad(int row, int col) {
+	private Set<Integer> eliminateByRowColReg(int row, int col) {
 		Set<Integer> options = allNumbersAvailable();
 		// Row
-		for (int i = 0; i < 9; i++) {
+		for (int i : bounds.getIndexes()) {
 			options.remove(sudoku.getValueAt(row, i));
 		}
 
 		// Column
-		for (int i = 0; i < 9; i++) {
+		for (int i : bounds.getIndexes()) {
 			options.remove(sudoku.getValueAt(i, col));
 		}
 
-		// Box
-		quadrantIterator(row, col).forEachRemaining(options::remove);
+		// Region
+		regionIterator(row, col).forEachRemaining(options::remove);
 
 		return options;
 	}
 
-	private Iterator<Integer> quadrantIterator(int row, int col) {
-		final int quadrantRow = (row / 3) * 3;
-		final int quadrantCol = (col / 3) * 3;
+	private Iterator<Integer> regionIterator(int row, int col) {
+		final int regionRow = (row / 3) * 3;
+		final int regionCol = (col / 3) * 3;
 
 		return new Iterator<Integer>() {
 			int offSetRow = 0;
@@ -100,7 +103,7 @@ public final class Solver {
 				if (!hasNext()) {
 					throw new RuntimeException();
 				}
-				int next = sudoku.getValueAt(quadrantRow + offSetRow, quadrantCol + offSetCol);
+				int next = sudoku.getValueAt(regionRow + offSetRow, regionCol + offSetCol);
 				offSetRow ++;
 				if (offSetRow >= 3) {
 					offSetRow = 0;

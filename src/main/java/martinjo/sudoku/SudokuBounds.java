@@ -1,36 +1,79 @@
 package martinjo.sudoku;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SudokuBounds {
-	private static final int MAX_SIZE = 8;
-	private static final int MIN_SIZE = 0;
-	
-	public static void checkSudokuBounds(int row, int col) {
-		if (row < MIN_SIZE || row > MAX_SIZE || col < MIN_SIZE || col > MAX_SIZE) {
-			throwCatchBoundsException();
-		}
+
+    private final int size;
+    private final int minIndex;
+    private final int maxIndex;
+    @Getter
+    private final List<Integer> indexes;
+
+    @Getter
+    private final int regionSize;
+    private final int regionMinIndex;
+    private final int regionMaxIndex;
+    @Getter
+    private final List<Integer> regionIndexes;
+
+    public static SudokuBounds forSize(int size) {
+        int minIndex = 0;
+        int maxIndex = size - 1;
+
+        int regionSize = (int)Math.sqrt(size);
+        int regionMinIndex = 0;
+        int regionMaxIndex = regionSize - 1;
+
+        List<Integer> indexesMutable = new ArrayList<>();
+        List<Integer> regionIndexesMutable = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            indexesMutable.add(i);
+        }
+
+        for (int i = 0; i < regionSize; i++) {
+            regionIndexesMutable.add(i);
+        }
+
+        return new SudokuBounds(
+                size,
+                minIndex,
+                maxIndex,
+                Collections.unmodifiableList(indexesMutable),
+                regionSize,
+                regionMinIndex,
+                regionMaxIndex,
+                Collections.unmodifiableList(regionIndexesMutable));
+
+    }
+
+    public void checkSudokuBounds(int row, int col) {
+		if (row < minIndex || row > maxIndex || col < minIndex || col > maxIndex) {
+            throw new OutOfSudokuBoundsException();
+        }
 	}
 
-	public static void checkSudokuRowBounds(int row) {
-		if (row < MIN_SIZE || row > MAX_SIZE) {
-			throwCatchBoundsException();
-		}
+	public void checkSudokuRowBounds(int row) {
+		if (row < minIndex || row > maxIndex) {
+            throw new OutOfSudokuBoundsException();
+        }
 	}
 
-	public static void checkSudokuColBounds(int col) {
-		if (col < MIN_SIZE || col > MAX_SIZE) {
-			throwCatchBoundsException();
-		}
+	public void checkSudokuColBounds(int col) {
+		if (col < minIndex || col > maxIndex) {
+            throw new OutOfSudokuBoundsException();
+        }
 	}
 
-	private static void throwCatchBoundsException() {
-		try {
-			throw new OutOfSudokuBoundsException();
-		} catch (OutOfSudokuBoundsException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private static class OutOfSudokuBoundsException extends Exception {
+    private static class OutOfSudokuBoundsException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 	}
 }
