@@ -20,10 +20,6 @@ public final class SudokuFreeGridPositionSet {
         Set<SudokuGridPosition> positions = new HashSet<>();
         for (int row : bounds.getIndexes()) {
             for (int col : bounds.getIndexes()) {
-                if (row == 6 && col == 4 ) {
-                    //hello
-                    int y = 0;
-                }
                 if (sudoku.getValueAt(row, col) == 0) {
                     positions.add(new SudokuGridPosition(row, col));
                 }

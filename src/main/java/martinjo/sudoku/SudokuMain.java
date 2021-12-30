@@ -12,11 +12,11 @@ public class SudokuMain {
 //		Sudoku sudoku = Sudoku9x9.fiveStarSudoku();
 //		Sudoku sudoku = Sudoku9x9.superHardSudoku();
 
-//      Sudoku sudoku = Sudoku16x16.beginner();
-		Sudoku sudoku = Sudoku16x16.easy();
+      Sudoku sudoku = Sudoku16x16.beginner();
+//		Sudoku sudoku = Sudoku16x16.easy();
 
 		sudoku.print();
-//		System.out.println();
+		System.out.println();
 		Solver solver = new Solver(sudoku);
 		solver.solve();
 	}
