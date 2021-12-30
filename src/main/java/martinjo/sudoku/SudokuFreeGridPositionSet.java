@@ -20,6 +20,10 @@ public final class SudokuFreeGridPositionSet {
         Set<SudokuGridPosition> positions = new HashSet<>();
         for (int row : bounds.getIndexes()) {
             for (int col : bounds.getIndexes()) {
+                if (row == 6 && col == 4 ) {
+                    //hello
+                    int y = 0;
+                }
                 if (sudoku.getValueAt(row, col) == 0) {
                     positions.add(new SudokuGridPosition(row, col));
                 }
@@ -30,16 +34,7 @@ public final class SudokuFreeGridPositionSet {
 
     public boolean containsFreePosition(int row, int col) {
         bounds.checkSudokuBounds(row, col);
-        Iterator<SudokuGridPosition> it = positions.iterator();
-        SudokuGridPosition currentPos;
-
-        while (it.hasNext()) {
-            currentPos = it.next();
-            if (currentPos.getRow() == row && currentPos.getCol() == col) {
-                return true;
-            }
-        }
-        return false;
+        return positions.stream().anyMatch(p -> p.getCol() == col && p.getRow() == row);
     }
 
     public void addFreePosition(int row, int col) {
@@ -64,7 +59,7 @@ public final class SudokuFreeGridPositionSet {
     public void removeFreeRowPositions(int row) {
         bounds.checkSudokuColBounds(row);
 
-        for (int col = 0; col < 9; col++) {
+        for (int col : bounds.getIndexes()) {
             removeFreePosition(row, col);
         }
     }
@@ -79,8 +74,9 @@ public final class SudokuFreeGridPositionSet {
 
     public void removeFreeRegionPositions(int row, int col) {
         bounds.checkSudokuBounds(row, col);
-        final int regionRow = (row / 3) * 3;
-        final int regionCol = (col / 3) * 3;
+        final int regionSize = bounds.getRegionSize();
+        final int regionRow = (row / regionSize) * regionSize;
+        final int regionCol = (col / regionSize) * regionSize;
 
         for (int offSetRow : bounds.getRegionIndexes()) {
             for (int offSetCol : bounds.getRegionIndexes()) {
@@ -105,11 +101,12 @@ public final class SudokuFreeGridPositionSet {
 
     private Set<SudokuGridPosition> freePositionsInRegion(int regionRow, int regionCol) {
         Set<SudokuGridPosition> freePosInRegion = new HashSet<>();
-        int offSetRow = regionRow * 3;
-        int offsetCol = regionCol * 3;
+        final int regionSize = bounds.getRegionSize();
+        int offSetRow = regionRow * regionSize;
+        int offsetCol = regionCol * regionSize;
 
-        for (int row = offSetRow; row < 3 + offSetRow; row++) {
-            for (int col = offsetCol; col < 3 + offsetCol; col++) {
+        for (int row = offSetRow; row < regionSize + offSetRow; row++) {
+            for (int col = offsetCol; col < regionSize + offsetCol; col++) {
                 if (containsFreePosition(row, col)) {
                     freePosInRegion.add(new SudokuGridPosition(row, col));
                 }
@@ -124,7 +121,15 @@ public final class SudokuFreeGridPositionSet {
     public void print() {
         for (int row : bounds.getIndexes()) {
             if (row != 0 && row % bounds.getRegionSize() == 0) {
-                System.out.println("------+------+------");
+                StringBuilder sb = new StringBuilder();
+                final int regionSize = bounds.getRegionSize();
+                String regionUnderline = "-".repeat(regionSize + regionSize);
+                sb.append(regionUnderline);
+                for (int i = 0; i < regionSize - 1; i++) {
+                    sb.append("+");
+                    sb.append(regionUnderline);
+                }
+                System.out.println(sb);
             }
             for (int col : bounds.getIndexes()) {
                 if (col != 0 && col % bounds.getRegionSize() == 0) {

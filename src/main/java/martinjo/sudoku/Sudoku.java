@@ -1,13 +1,12 @@
 package martinjo.sudoku;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Sudoku {
-    protected final ArrayList<List<Integer>> array;
+    protected final List<List<Integer>> array;
     private final SudokuBounds bounds;
 
-    public Sudoku(ArrayList<List<Integer>> array, int size) {
+    public Sudoku(List<List<Integer>> array, int size) {
         this.array = array;
         this.bounds = SudokuBounds.forSize(size);
     }
@@ -17,7 +16,6 @@ public class Sudoku {
     }
 
     public void print() {
-
 		for (int row : bounds.getIndexes()) {
 			if (row != 0 && row % bounds.getRegionSize() == 0) {
 			    StringBuilder sb = new StringBuilder();
@@ -34,8 +32,9 @@ public class Sudoku {
 				if (col != 0 && col % bounds.getRegionSize() == 0) {
 					System.out.print("| ");
 				}
-				String entry = (getValueAt(row, col) == 0) ? "  " : String.format("%02d", getValueAt(row, col));
-				System.out.print(entry + " ");
+                int entry = getValueAt(row, col);
+				String printableEntry = entry < 10 ? String.format("%02d", entry).replace("0", " ") : entry + "";
+                System.out.print(printableEntry + " ");
 			}
 			System.out.println();
 		}
